@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id         String    @id @default(cuid())
+  username   String    @unique
+  password   String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+}
+
+model aslab {
+  id             String           @id @default(cuid())
+  name           String
+  npm            String           @unique
+  password       String
+  noHp           String
+  images         String[]
+  praktikan      praktikan[]
+  soal_asistensi soal_asistensi[]
+  created_at     DateTime?        @default(now())
+  updated_at     DateTime?        @updatedAt
+}
+
+model praktikan {
+  id         String    @id @default(cuid())
+  name       String
+  npm        String    @unique
+  password   String
+  images     String[]
+  aslab_id   String
+  aslab      aslab     @relation(fields: [aslab_id], references: [id])
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+}
+
+model soal_asistensi {
+  id           String    @id @default(cuid())
+  name         String
+  modul        String
+  deskripsi    String
+  due_date     DateTime
+  file_url     String
+  aslab_id     String
+  praktikan_id String
+  created_at   DateTime? @default(now())
+  updated_at   DateTime? @updatedAt
+
+  aslab aslab @relation(fields: [aslab_id], references: [id])
+}
